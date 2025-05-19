@@ -60,7 +60,7 @@ func (cli *CLI) Retrieve(file string, version int) {
 
 	if err != nil {
 		//reference file not found, the user might input a wrong filename or need to upload the file first
-		fmt.Println("unable to the file ", file, "you might give a wrong filename or need to use the upload command to upload it.")
+		fmt.Println("unable to retrieve the file ", file, "you might give a wrong filename or need to use the upload command to upload it.")
 	} else {
 		//open the reference file to get the CID and previousVersion of each patch of the file
 		filePrinter, _ := os.Open(referencePath)
@@ -126,6 +126,59 @@ func (cli *CLI) Retrieve(file string, version int) {
 	}
 }
 
+func (cli *CLI) Update(file string, version int, updateFile string) {
+	dir, _ := os.Getwd()
+	referencePath := filepath.Join(dir, "reference", file)
+	fmt.Println(referencePath)
+	_, err := os.Stat(referencePath)
+
+	if err != nil {
+		//reference file not found
+		fmt.Println("unable to update the file ", file, "you might give a wrong filename or need to use the upload command to upload it.")
+	} else {
+		//reference file found, update the file
+		//first, retrieve the base version of the file
+		cli.Retrieve(file, version)
+		//then, generate the patch
+		oldVersionName := file + "_v" + strconv.Itoa(version)
+		patchName := "patch" + strconv.Itoa(rand.Int())
+		cmd := exec.Command("bsdiff", oldVersionName, updateFile, patchName)
+		cmd.Output()
+		//next, import the patch to get its CID and upload it
+		cmd2 := exec.Command("./lotus", "client", "import", patchName)
+		out, _ := cmd2.Output()
+		//The output of this command follows the format Import XXXXXX, Root CID, we now spilt the string to get the CID
+		parts := strings.Split(string(out), "Root ")
+		if len(parts) < 2 {
+			fmt.Println("Error importing file")
+			return
+		}
+		cid := strings.TrimSpace(parts[1])
+		fmt.Println(cid)
+		cmd3 := exec.Command("./lotus", "client", "deal", cid, "t01000", "0.026", "518400")
+		out3, _ := cmd3.Output()
+		fmt.Println(string(out3))
+		//finally, update the reference file of the target file to save this update
+		filePrinter, _ := os.Open(referencePath)
+		defer filePrinter.Close()
+		//scan the file line by line and store it in an array
+		fileReference := []fileRef{}
+		scanner := bufio.NewScanner(filePrinter)
+		for scanner.Scan() {
+			line := strings.TrimSpace(scanner.Text())
+			parts := strings.Fields(line)
+			preVersion, _ := strconv.Atoi(parts[1])
+			reference := fileRef{fileCID: parts[0], previousVersion: preVersion}
+			fileReference = append(fileReference, reference)
+		}
+		fileReference = append(fileReference, fileRef{fileCID: cid, previousVersion: version})
+		versionNum := strconv.Itoa(len(fileReference))
+		WriteReference(file, fileReference)
+		fmt.Println("Updated ", file, "(version ", versionNum, ") to storage miner.")
+		os.Remove(oldVersionName)
+	}
+}
+
 func WriteReference(file string, fileReferences []fileRef) {
 	dir, _ := os.Getwd()
 	referencePath := filepath.Join(dir, "reference", file)
@@ -134,16 +187,22 @@ func WriteReference(file string, fileReferences []fileRef) {
 	for _, ref := range fileReferences {
 		line := fmt.Sprintf("%s %d", ref.fileCID, ref.previousVersion)
 		filePrinter.WriteString(line)
+		filePrinter.WriteString("\n")
 	}
 }
 
 func (cli *CLI) Run() {
 	uploadCmd := flag.NewFlagSet("upload", flag.ExitOnError)
 	retrieveCmd := flag.NewFlagSet("retrieve", flag.ExitOnError)
+	//file update and file fork process are almost the same, so I merge them into one command and make client to choose which version (updateBase) to apply the update
+	updateCmd := flag.NewFlagSet("update", flag.ExitOnError)
 
 	uploadFile := uploadCmd.String("file", "", "the file to upload")
 	retrieveFile := retrieveCmd.String("file", "", "the file to retrieve")
 	retrieveVersion := retrieveCmd.Int("version", 1, "the version of the file to retrieve, default version 1")
+	updateFile := updateCmd.String("file", "", "the file to update")
+	updateBase := updateCmd.Int("base", 1, "the base version of the file to apply the update, default version 1")
+	updateVersion := updateCmd.String("new", "", "the updated file")
 
 	switch os.Args[1] {
 	case "upload":
@@ -163,6 +222,17 @@ func (cli *CLI) Run() {
 		fmt.Println(*retrieveFile)
 		fmt.Println(*retrieveVersion)
 		cli.Retrieve(*retrieveFile, *retrieveVersion)
+	case "update":
+		err := updateCmd.Parse(os.Args[2:])
+		if err != nil {
+			fmt.Println("Error parsing update command")
+			return
+		}
+		fmt.Println(*updateFile)
+		fmt.Println(*updateBase)
+		fmt.Println(*updateVersion)
+		cli.Update(*updateFile, *updateBase, *updateVersion)
+
 	default:
 		fmt.Println("Invalid command")
 	}
