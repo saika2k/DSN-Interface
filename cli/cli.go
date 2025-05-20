@@ -19,6 +19,24 @@ type fileRef struct {
 	previousVersion int
 }
 
+type intslice []int
+
+func (i *intslice) String() string {
+	return fmt.Sprint(*i)
+}
+
+func (i *intslice) Set(value string) error {
+	part := strings.Split(value, ",")
+	for j := 0; j < len(part); j++ {
+		v, err := strconv.Atoi(strings.TrimSpace(part[j]))
+		if err != nil {
+			return err
+		}
+		*i = append(*i, v)
+	}
+	return nil
+}
+
 func (cli *CLI) Upload(file string) {
 	dir, _ := os.Getwd()
 	referencePath := filepath.Join(dir, "reference", file)
@@ -196,6 +214,11 @@ func (cli *CLI) Run() {
 	retrieveCmd := flag.NewFlagSet("retrieve", flag.ExitOnError)
 	//file update and file fork process are almost the same, so I merge them into one command and make client to choose which version (updateBase) to apply the update
 	updateCmd := flag.NewFlagSet("update", flag.ExitOnError)
+	mergeCmd := flag.NewFlagSet("merge", flag.ExitOnError)
+
+	var base intslice
+	var mergeFile string
+	var mergeVersion string
 
 	uploadFile := uploadCmd.String("file", "", "the file to upload")
 	retrieveFile := retrieveCmd.String("file", "", "the file to retrieve")
@@ -203,6 +226,9 @@ func (cli *CLI) Run() {
 	updateFile := updateCmd.String("file", "", "the file to update")
 	updateBase := updateCmd.Int("base", 1, "the base version of the file to apply the update, default version 1")
 	updateVersion := updateCmd.String("new", "", "the updated file")
+	mergeCmd.StringVar(&mergeFile, "file", "", "the file to merge")
+	mergeCmd.Var(&base, "base", "the base versions of the file to apply merge, multiple versions saperated with comma(,)")
+	mergeCmd.StringVar(&mergeVersion, "new", "", "the updated file")
 
 	switch os.Args[1] {
 	case "upload":
@@ -232,7 +258,17 @@ func (cli *CLI) Run() {
 		fmt.Println(*updateBase)
 		fmt.Println(*updateVersion)
 		cli.Update(*updateFile, *updateBase, *updateVersion)
-
+	case "merge":
+		err := mergeCmd.Parse(os.Args[2:])
+		if err != nil {
+			fmt.Println("Error parsing merge command")
+			return
+		}
+		fmt.Println(base)
+		fmt.Println(mergeFile)
+		fmt.Println(base[0])
+		fmt.Println(mergeVersion)
+		cli.Update(mergeFile, base[0], mergeVersion)
 	default:
 		fmt.Println("Invalid command")
 	}
