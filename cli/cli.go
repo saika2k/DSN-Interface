@@ -80,7 +80,7 @@ func (cli *CLI) Run() {
 			fmt.Println("Error parsing upload command")
 			return
 		}
-		fmt.Println(*uploadFile)
+		//fmt.Println(*uploadFile)
 		cli.Upload(*uploadFile)
 	case "retrieve":
 		err := retrieveCmd.Parse(os.Args[2:])
@@ -88,8 +88,8 @@ func (cli *CLI) Run() {
 			fmt.Println("Error parsing retrieve command")
 			return
 		}
-		fmt.Println(*retrieveFile)
-		fmt.Println(*retrieveVersion)
+		//fmt.Println(*retrieveFile)
+		//fmt.Println(*retrieveVersion)
 		cli.Retrieve(*retrieveFile, *retrieveVersion)
 	case "update":
 		err := updateCmd.Parse(os.Args[2:])
@@ -97,9 +97,9 @@ func (cli *CLI) Run() {
 			fmt.Println("Error parsing update command")
 			return
 		}
-		fmt.Println(*updateFile)
-		fmt.Println(*updateBase)
-		fmt.Println(*updateVersion)
+		//fmt.Println(*updateFile)
+		//fmt.Println(*updateBase)
+		//fmt.Println(*updateVersion)
 		cli.Update(*updateFile, *updateBase, *updateVersion)
 	case "merge":
 		err := mergeCmd.Parse(os.Args[2:])
@@ -107,10 +107,10 @@ func (cli *CLI) Run() {
 			fmt.Println("Error parsing merge command")
 			return
 		}
-		fmt.Println(base)
-		fmt.Println(mergeFile)
-		fmt.Println(base[0])
-		fmt.Println(mergeVersion)
+		//fmt.Println(base)
+		//fmt.Println(mergeFile)
+		//fmt.Println(base[0])
+		//fmt.Println(mergeVersion)
 		cli.Update(mergeFile, base[0], mergeVersion)
 	case "BFTUpload":
 		err := BFTUploadCmd.Parse(os.Args[2:])
@@ -118,8 +118,8 @@ func (cli *CLI) Run() {
 			fmt.Println("Error parsing BFTUpload command")
 			return
 		}
-		fmt.Println(*BFTUploadFile)
-		fmt.Println(*BFTUploadTotal)
+		//fmt.Println(*BFTUploadFile)
+		//fmt.Println(*BFTUploadTotal)
 		cli.BFTUpload(*BFTUploadFile, *BFTUploadTotal)
 	case "BFTRetrieve":
 		err := BFTRetrieveCmd.Parse(os.Args[2:])
@@ -127,7 +127,7 @@ func (cli *CLI) Run() {
 			fmt.Println("Error parsing BFTRetrieve command")
 			return
 		}
-		fmt.Println(*BFTRetrieveFile)
+		//fmt.Println(*BFTRetrieveFile)
 		cli.BFTRetrieve(*BFTRetrieveFile)
 	default:
 		fmt.Println("Invalid command")

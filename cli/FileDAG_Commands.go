@@ -84,9 +84,9 @@ func (cli *CLI) Retrieve(file string, version int) {
 		}
 
 		//test scan
-		for i := 0; i < len(fileReference); i++ {
-			fmt.Println(fileReference[i].fileCID, fileReference[i].previousVersion)
-		}
+		//for i := 0; i < len(fileReference); i++ {
+		//fmt.Println(fileReference[i].fileCID, fileReference[i].previousVersion)
+		//}
 
 		//Now retrieve the target patches and original file
 		versionToRetrieve := version

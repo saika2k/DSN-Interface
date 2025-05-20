@@ -95,9 +95,9 @@ func (cli *CLI) BFTRetrieve(file string) {
 		}
 
 		//test scan
-		for i := 0; i < len(fileReference); i++ {
-			fmt.Println(fileReference[i].fileCID, fileReference[i].previousVersion)
-		}
+		//for i := 0; i < len(fileReference); i++ {
+		//fmt.Println(fileReference[i].fileCID, fileReference[i].previousVersion)
+		//}
 
 		//Now retrieve all the shares and recover the file
 		shares := []string{}
