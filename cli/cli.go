@@ -34,6 +34,8 @@ func (cli *CLI) PrintUsage() {
 	fmt.Println("	update -file filepath -base version -new filepath: update the version of a file, -file is the filename you input in the upload command, -base is the integer version number to apply the update -new is the filepath of the new version of the file.")
 	fmt.Println("	merge -file filepath -base version1,version2,... -new filepath: merge the version of a file, -file is the filename you input in the upload command, -base contains multiple integer version numbers to apply the nerge, saperated by comma -new is the filepath of the new version of the file.")
 	fmt.Println("	retrieve -file filepath -version version : retrieve a specific version of a file, -file is the filename you input in the upload command, -version is the integer version number you want to retrieve.")
+	fmt.Println("	BFTUpload -file filepath -total n: upload a file to BFT-DSN, -file is the filepath of the upload file, -total is the total number of erasure shares")
+	fmt.Println("	BFTRetrieve -file filepath : retrieve a file from BFT-DSN, -file is the filename you input in the BFTUpload command")
 }
 
 func (cli *CLI) ValidateArgs() {
@@ -47,9 +49,12 @@ func (cli *CLI) Run() {
 	cli.ValidateArgs()
 	uploadCmd := flag.NewFlagSet("upload", flag.ExitOnError)
 	retrieveCmd := flag.NewFlagSet("retrieve", flag.ExitOnError)
+
 	//file update and file fork process are almost the same, so I merge them into one command and make client to choose which version (updateBase) to apply the update
 	updateCmd := flag.NewFlagSet("update", flag.ExitOnError)
 	mergeCmd := flag.NewFlagSet("merge", flag.ExitOnError)
+	BFTUploadCmd := flag.NewFlagSet("BFTUpload", flag.ExitOnError)
+	BFTRetrieveCmd := flag.NewFlagSet("BFTRetrieve", flag.ExitOnError)
 
 	var base intslice
 	var mergeFile string
@@ -64,6 +69,9 @@ func (cli *CLI) Run() {
 	mergeCmd.StringVar(&mergeFile, "file", "", "the file to merge")
 	mergeCmd.Var(&base, "base", "the base versions of the file to apply merge, multiple versions saperated with comma(,)")
 	mergeCmd.StringVar(&mergeVersion, "new", "", "the updated file")
+	BFTUploadFile := BFTUploadCmd.String("file", "", "the file to upload")
+	BFTUploadTotal := BFTUploadCmd.Int("total", 4, "the total number of shares to upload")
+	BFTRetrieveFile := BFTRetrieveCmd.String("file", "", "the file to retrieve")
 
 	switch os.Args[1] {
 	case "upload":
@@ -104,6 +112,23 @@ func (cli *CLI) Run() {
 		fmt.Println(base[0])
 		fmt.Println(mergeVersion)
 		cli.Update(mergeFile, base[0], mergeVersion)
+	case "BFTUpload":
+		err := BFTUploadCmd.Parse(os.Args[2:])
+		if err != nil {
+			fmt.Println("Error parsing BFTUpload command")
+			return
+		}
+		fmt.Println(*BFTUploadFile)
+		fmt.Println(*BFTUploadTotal)
+		cli.BFTUpload(*BFTUploadFile, *BFTUploadTotal)
+	case "BFTRetrieve":
+		err := BFTRetrieveCmd.Parse(os.Args[2:])
+		if err != nil {
+			fmt.Println("Error parsing BFTRetrieve command")
+			return
+		}
+		fmt.Println(*BFTRetrieveFile)
+		cli.BFTRetrieve(*BFTRetrieveFile)
 	default:
 		fmt.Println("Invalid command")
 	}
