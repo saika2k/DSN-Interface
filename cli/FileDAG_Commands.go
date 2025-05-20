@@ -9,6 +9,7 @@ import (
 	"path/filepath"
 	"strconv"
 	"strings"
+	"time"
 )
 
 type fileRef struct {
@@ -49,7 +50,7 @@ func (cli *CLI) Upload(file string) {
 		//save the reference of the file
 		WriteReference(file, fileReference)
 
-		fmt.Println("Uploaded", file, "(version 1) to storage miner.")
+		fmt.Println("Uploaded", file, "( version 1 ) to storage miner.")
 	} else {
 		//reference file found, upload it to FileDAG
 		fmt.Println("the file", file, "already exist in FileDAG. If you want to update it please use the update/fork/merge command.")
@@ -110,7 +111,7 @@ func (cli *CLI) Retrieve(file string, version int) {
 			//in this case, we only retrieve the original file, just rename the file
 			retrieveName := file + "_v" + strconv.Itoa(version)
 			os.Rename(strconv.Itoa(0), retrieveName)
-			fmt.Println("successfully retrieve the file", file, ". The retrieved file is saved as", retrieveName)
+			fmt.Println("successfully retrieve the file, saved as", retrieveName)
 		} else {
 			tempFile := strconv.Itoa(rand.Int())
 			oldFile := strconv.Itoa(totalRetrieve - 1)
@@ -133,7 +134,7 @@ func (cli *CLI) Retrieve(file string, version int) {
 			}
 			retrieveName := file + "_v" + strconv.Itoa(version)
 			os.Rename(tempFile, retrieveName)
-			fmt.Println("successfully retrieve the file", file, ". The retrieved file is saved as", retrieveName)
+			fmt.Println("successfully retrieve the file, saved as", retrieveName)
 		}
 	}
 }
@@ -155,7 +156,9 @@ func (cli *CLI) Update(file string, version int, updateFile string) {
 
 		//then, generate the patch
 		oldVersionName := file + "_v" + strconv.Itoa(version)
+		rand.Seed(time.Now().UnixNano())
 		patchName := "patch" + strconv.Itoa(rand.Int())
+		//fmt.Println(patchName)
 		cmd := exec.Command("bsdiff", oldVersionName, updateFile, patchName)
 		cmd.Output()
 
@@ -196,7 +199,7 @@ func (cli *CLI) Update(file string, version int, updateFile string) {
 
 		//write the updated reference back to the file
 		WriteReference(file, fileReference)
-		fmt.Println("Updated", file, "(version", versionNum, ") to storage miner.")
+		fmt.Println("Updated", file, "( version", versionNum, ") to storage miner.")
 
 		//delete the temporary files generated during the process
 		os.Remove(oldVersionName)

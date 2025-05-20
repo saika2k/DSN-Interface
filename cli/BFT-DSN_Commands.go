@@ -61,6 +61,7 @@ func (cli *CLI) BFTUpload(file string, total int) {
 		}
 		//save the reference of the file
 		WriteReference(file, fileReference)
+		fmt.Println("Uploaded", file, "to storage miner.")
 	} else {
 		//reference file found, upload it to FileDAG
 		fmt.Println("the file ", file, " already exist in BFT-DSN. You can retrieve it use the BFTRetrieve command.")
@@ -116,6 +117,6 @@ func (cli *CLI) BFTRetrieve(file string) {
 		for i := 0; i < len(shares); i++ {
 			os.Remove(shares[i])
 		}
-		fmt.Println("successfully retrieve the file", file, ". The retrieved file is saved as", recoverFile)
+		fmt.Println("successfully retrieve the file, saved as", recoverFile)
 	}
 }
