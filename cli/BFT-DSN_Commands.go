@@ -15,7 +15,7 @@ func (cli *CLI) BFTUpload(file string, total int) {
 	//check whether the reference file exist to get whether the file exist in BFT-DSN
 	dir, _ := os.Getwd()
 	referencePath := filepath.Join(dir, "reference", file)
-	fmt.Println(referencePath)
+	//fmt.Println(referencePath)
 	_, err := os.Stat(referencePath)
 
 	if err != nil {
@@ -35,7 +35,7 @@ func (cli *CLI) BFTUpload(file string, total int) {
 		for i := 0; i < total; i++ {
 			//first import the share
 			uploadShare := file + "." + strconv.Itoa(i) + "_" + strconv.Itoa(total) + ".fec"
-			fmt.Println(uploadShare)
+			//fmt.Println(uploadShare)
 			cmd := exec.Command("./lotus", "client", "import", uploadShare)
 			out, _ := cmd.Output()
 
@@ -72,7 +72,7 @@ func (cli *CLI) BFTRetrieve(file string) {
 	//check whether the reference file exist to get whether the file exist in BFT-DSN
 	dir, _ := os.Getwd()
 	referencePath := filepath.Join(dir, "reference", file)
-	fmt.Println(referencePath)
+	//fmt.Println(referencePath)
 	_, err := os.Stat(referencePath)
 
 	if err != nil {

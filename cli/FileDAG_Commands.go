@@ -21,7 +21,7 @@ func (cli *CLI) Upload(file string) {
 	//check whether the reference file exist to get whether the file exist in FileDAG
 	dir, _ := os.Getwd()
 	referencePath := filepath.Join(dir, "reference", file)
-	fmt.Println(referencePath)
+	//fmt.Println(referencePath)
 	_, err := os.Stat(referencePath)
 
 	if err != nil {
@@ -61,7 +61,7 @@ func (cli *CLI) Retrieve(file string, version int) {
 	//check whether the reference file exist to get whether the file exist in FileDAG
 	dir, _ := os.Getwd()
 	referencePath := filepath.Join(dir, "reference", file)
-	fmt.Println(referencePath)
+	//fmt.Println(referencePath)
 	_, err := os.Stat(referencePath)
 
 	if err != nil {
@@ -143,7 +143,7 @@ func (cli *CLI) Update(file string, version int, updateFile string) {
 	//check whether the reference file exist to get whether the file exist in FileDAG
 	dir, _ := os.Getwd()
 	referencePath := filepath.Join(dir, "reference", file)
-	fmt.Println(referencePath)
+	//fmt.Println(referencePath)
 	_, err := os.Stat(referencePath)
 
 	if err != nil {
