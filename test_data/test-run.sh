@@ -5,18 +5,10 @@ rm -rf localnet.json
 rm -rf ~/.genesis-sectors
 rm -rf ~/.lotus
 rm -rf ~/.lotusminer
-rm -rf DB
-rm -rf SST
-rm -rf client_upload
-rm -rf client_download
 rm -rf database
+rm -rf reference
 
-mkdir DB
-mkdir SST
-mkdir client_upload
-mkdir client_download
-touch acc
-touch leaf
+mkdir reference
 ./lotus fetch-params 8MiB
 ./lotus-seed pre-seal --sector-size 8MiB --num-sectors 2
 ./lotus-seed genesis new localnet.json
@@ -31,15 +23,6 @@ echo "sleep 30s" && sleep 30s
 #tmux new-session -s "lotus-miner" -d "./lotus-miner run --nosync"
 nohup ./lotus-miner run --nosync > miner.log 2>&1 &
 
-dd if=/dev/urandom of="database" bs=8M count=300
-
-./lotus client import 4.5M
-./lotus client import 5.0M
-./lotus client import 5.5M
-./lotus client import 6.0M
-./lotus client import 6.5M
-./lotus client import 7.0M
-./lotus client import 7.5M
 
 #sleep 10
 

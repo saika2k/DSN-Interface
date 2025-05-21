@@ -36,9 +36,9 @@ sleep 360
 
 rm -rf file1_v3
 
-./DSN-Interface update -file file1 -base 3 -new file4 
+./DSN-Interface update -file file1 -base 2 -new file4 
 sleep 360
-#Note: the CID of the uploaded patch: bafykbzaceb6djch625f4plidvoq2ahgh6mk4ixf2uurfmbwmfg3ssro5io4eo (same as the CID in the fourth line of reference file)
+#Note: the CID of the uploaded patch: bafykbzacedzxinsaaxz723zwsnxlmv52of3jwvpq6ptotssaf3rqoizqsediq (same as the CID in the fourth line of reference file)
 
 ./DSN-Interface retrieve -file file1 -version 4
 sleep 10
@@ -64,7 +64,7 @@ sleep 10
 #bafykbzacebylwxfbdyazodwqqln5modpp6w32jzbn7p2pzh6qdy4b6zpcxyjc -1
 #bafykbzaceckdlpbjc4bf4fhyqb3m32p3uywebirqt6fewjweulyw4heuxuibc 1
 #bafykbzacedo2l4l4nu33dtnfnxqdi5gojpwgmmnu7il5zm2he4gipqvbdn2go 2
-#bafykbzaceb6djch625f4plidvoq2ahgh6mk4ixf2uurfmbwmfg3ssro5io4eo 3
+#bafykbzacedzxinsaaxz723zwsnxlmv52of3jwvpq6ptotssaf3rqoizqsediq 2
 #bafykbzacedo3rbh6dtntzkftouwli5y3l4lwsjy7qpnyvdyrt7joowha75wpg 2
 ########################################################################################
 

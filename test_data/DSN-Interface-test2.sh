@@ -9,7 +9,7 @@ sleep 600
 sleep 10
 ./lotus client import file6
 ./lotus client import recover_file6
-#Note: the CID of recover_file6 should be the same as file6
+#Note: the CID of recover_file6 should be the same as file6 (bafykbzacebae567lb3olmwex5halthu4oatbszinp7cmpf6jsha5sc4mvo2p2)
 
 
 ########################################################################################
