@@ -34,9 +34,9 @@ Users can follow the README.md of these two projects to install these two projec
 ## Install DSN-Interface
 
 DSN-Interface depends on bsdiff, bspatch, zfec and zunfec. Users can install them with the following command
-'''sh
+```sh
 sudo apt update && sudo apt install -y bsdiff python3-pip && pip3 install zfec
-'''
+```
 
 Note: when installing zfec, you may see this warning:
 ```sh
@@ -68,17 +68,21 @@ In addition, we provide some auxiliary test scripts and test files in the test-d
 The script test-run.sh is used to start FileDAG and BFT-DSN locally and build a local test network. This network supports uploading files not exceeding 8MB.
 
 The script DSN-Interface-test1.sh is used to test the correctness of operaters in FileDAG. We use the file1, file2, file3, file4 and file5 to run the test. 
-This test first upload and retrieve file1, the first version of the file. 
-Then we update file1, the new version is file2, and retrieve file2. 
-After that we update file2, the new version is file3, and retrieve file3. 
-After that we test the fork command which we based on file2 and update the file with file4, and retrieve file4. 
-Finally, we test the merge command which we based on file2, file3 and file4 and update these file with file5, and retrieve file5. 
-The result of this test in the comments in this file.
+
+1) This test first upload and retrieve file1, the first version of the file. 
+2) Then we update file1, the new version is file2, and retrieve file2. 
+3) After that we update file2, the new version is file3, and retrieve file3. 
+4) After that we test the fork command which we based on file2 and update the file with file4, and retrieve file4. 
+5) Finally, we test the merge command which we based on file2, file3 and file4 and update these file with file5, and retrieve file5. 
+
+The results of this test are shown in the comments in this file.
 
 The script DSN-Interface-test2.sh is used to test the correctness of operaters in BFT-DSN. We use the file6 to run the test. 
-This test first upload file6, we set the client to upload 4 EC shares.
-Then we retrieve file6, where the client retrieve each share of the file and try to recover the file.
-The result of this test in the comments in this file.
+
+1) This test first upload file6, we set the client to upload 4 EC shares.
+2) Then we retrieve file6, where the client retrieve each share of the file and try to recover the file.
+
+The results of this test are shown in the comments in this file.
 
 Users can use these scripts to become familiar with the various commands of DSN-Interface and use their own data to play with DSN-Interface.
 
