@@ -25,7 +25,7 @@ func (cli *CLI) BFTUpload(file string, total int) {
 		m := total
 		k := m - f
 
-		//create the EC shares of the file
+		//create the EC shares of the file using zfec command
 		cmd := exec.Command("zfec", "-k", strconv.Itoa(k), "-m", strconv.Itoa(m), file)
 		cmd.Output()
 
@@ -63,7 +63,7 @@ func (cli *CLI) BFTUpload(file string, total int) {
 		WriteReference(file, fileReference)
 		fmt.Println("Uploaded", file, "to storage miner.")
 	} else {
-		//reference file found, upload it to FileDAG
+		//reference file found, output the following message
 		fmt.Println("the file ", file, " already exist in BFT-DSN. You can retrieve it use the BFTRetrieve command.")
 	}
 }
@@ -83,7 +83,7 @@ func (cli *CLI) BFTRetrieve(file string) {
 		filePrinter, _ := os.Open(referencePath)
 		defer filePrinter.Close()
 
-		//scan the file line by line and store it in an slide
+		//scan the reference file line by line and store each line of the file in an slice
 		fileReference := []fileRef{}
 		scanner := bufio.NewScanner(filePrinter)
 		for scanner.Scan() {
@@ -99,7 +99,7 @@ func (cli *CLI) BFTRetrieve(file string) {
 		//fmt.Println(fileReference[i].fileCID, fileReference[i].previousVersion)
 		//}
 
-		//Now retrieve all the shares and recover the file
+		//Now retrieve all the shares and recover the file using zunfec
 		shares := []string{}
 		for i := 0; i < len(fileReference); i++ {
 			shareName := "share" + strconv.Itoa(i)

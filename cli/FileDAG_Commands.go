@@ -72,7 +72,7 @@ func (cli *CLI) Retrieve(file string, version int) {
 		filePrinter, _ := os.Open(referencePath)
 		defer filePrinter.Close()
 
-		//scan the file line by line and store it in an slide
+		//scan the file line by line and store it in an slice
 		fileReference := []fileRef{}
 		scanner := bufio.NewScanner(filePrinter)
 		for scanner.Scan() {
@@ -182,7 +182,7 @@ func (cli *CLI) Update(file string, version int, updateFile string) {
 		filePrinter, _ := os.Open(referencePath)
 		defer filePrinter.Close()
 
-		//scan the file line by line and store it in an slide
+		//scan the file line by line and store it in an slice
 		fileReference := []fileRef{}
 		scanner := bufio.NewScanner(filePrinter)
 		for scanner.Scan() {
@@ -211,6 +211,7 @@ func WriteReference(file string, fileReferences []fileRef) {
 	referencePath := filepath.Join(dir, "reference", file)
 	filePrinter, _ := os.Create(referencePath)
 	defer filePrinter.Close()
+	//write the file reference slice to a file, each line of the file store an element in the slice
 	for _, ref := range fileReferences {
 		line := fmt.Sprintf("%s %d", ref.fileCID, ref.previousVersion)
 		filePrinter.WriteString(line)
